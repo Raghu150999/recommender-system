@@ -5,11 +5,11 @@ class CollabFilter:
     Uses collaborative filtering approach to predict user ratings for recommendation systems.
     '''
 
-    def __init__(self, utilmat, type='item', k=5):
+    def __init__(self, utilmat, ftype='item', k=5):
         '''
         Arguments:
             um: Utility matrix
-            type: Type of filtering used
+            ftype: Type of filtering used
                 Available:
                     'item': item - item filtering
                     'user': user - user filtering
@@ -18,6 +18,14 @@ class CollabFilter:
         '''
         self.utilmat = utilmat
         self.k = k
+        if ftype == 'item':
+            self.predict = self.predict_i
+        elif ftype == 'user':
+            self.predict = self.predict_u
+        elif ftype == 'baseline':
+            self.predict = self.predict_b
+        else:
+            raise ValueError('Invalid collaborative filter type')
     
     def predict_i(self, user, movie):
         '''
@@ -136,5 +144,6 @@ class CollabFilter:
     def bound(self, rating):
         '''
         Bounds the rating in the range [1, 5]
-        return min(max(rating, 1), 5)
         '''
+        return min(max(rating, 1), 5)
+        
