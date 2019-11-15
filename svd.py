@@ -7,7 +7,7 @@ class SVD:
     SVD (singular value decomposition) is used for prediction of user - movie ratings
     '''
 
-    def __init__(self, df, energy=1):
+    def __init__(self, df):
         '''
         Arguments:
             energy: 
@@ -24,7 +24,7 @@ class SVD:
             movie = df.loc[i, 'movieid']
             rating = df.loc[i, 'rating']
             self.M[user][movie] = rating
-        U, S, V = np.linalg.svd(self.M, full_matrices=False)
+        U, S, V = computeSVD(self.M)
         self.U = U
         self.S = S
         self.V = V
@@ -51,6 +51,10 @@ class SVD:
         rmse = math.sqrt(np.sum((self.M - R) ** 2) / N)
         mae = np.sum(np.abs(self.M - R)) / N
         return rmse, mae
+
+def computeSVD(M):
+    U, S, V = np.linalg.svd(M, full_matrices=False)
+    return U, S, V
 
 if __name__ == "__main__":
     df = pd.read_csv('ratings_dev.csv')
