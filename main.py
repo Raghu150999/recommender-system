@@ -40,6 +40,7 @@ print('RMSE using user-user filtering: ', rmse_u)
 print('RMSE using item-item filtering: ', rmse_i)
 '''
 
+# Using CUR decompositon
 '''
 df = pd.read_csv('ratings_dev.csv')
 utilmat = UtilMat(df)
@@ -64,6 +65,9 @@ if len(val_loss) > 0:
     plt.plot(np.arange(0, l), val_loss, color='blue')
     plt.show()
 print(lf.calc_loss(test_utilmat))
+
+# Save the model
+lf.save('m1_100')
 
 '''
 Tuning number of latent factors:

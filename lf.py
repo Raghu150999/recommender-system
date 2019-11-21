@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import pickle
 
 class LF:
     '''
@@ -101,7 +102,23 @@ class LF:
         rmse /= cnt
         rmse = math.sqrt(rmse)
         return rmse
+    
+    def save(self, name):
+        '''
+        Saves the model
+        '''
+        filename = 'saved/' + name + '.pickle'
+        with open(filename, 'wb') as f:
+            pickle.dump(self.__dict__, f)
 
+    def load(self, name):
+        '''
+        Loads the model
+        '''
+        filename = 'saved/' + name + '.pickle'
+        with open(filename, 'rb') as f:
+            tmp_dict = pickle.load(f)
+        self.__dict__.update(tmp_dict)
 
 
 
