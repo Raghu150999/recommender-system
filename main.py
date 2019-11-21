@@ -52,22 +52,51 @@ print(rmse, mae)
 '''
 Todos:
     Try different weight functions for weighted similarity
+    Add select options functionality through command line arguments
 '''
 
 # Using latent factor model for prediction
-lf = LF(n=100, learning_rate=0.05, lmbda=0.1, verbose=True)
+lf = LF(n=100, learning_rate=0.01, lmbda=0.2, verbose=True)
 
-train_loss, val_loss = lf.train(train_utilmat, 100, val_utilmat=val_utilmat)
+# Training the model
+try:
+    lf.train(train_utilmat, 100, val_utilmat=val_utilmat)
+except BaseException as e:
+    lf.save('tmp')
+
+train_loss = lf.history['train_loss']
+val_loss = lf.history['val_loss']
 l = len(train_loss)
+
+# Plotting training loss
 plt.plot(np.arange(0, l), train_loss, color='red')
-plt.show()
-if len(val_loss) > 0:
-    plt.plot(np.arange(0, l), val_loss, color='blue')
-    plt.show()
+plt.xlabel('Iterations')
+plt.ylabel('RMSE')
+plt.title('Training loss curve')
+plt.savefig('plots/train_loss.png', format='png')
+plt.clf()
+
+# Plotting validation loss
+plt.plot(np.arange(0, l), val_loss, color='blue')
+plt.xlabel('Iterations')
+plt.ylabel('RMSE')
+plt.title('Validation loss curve')
+plt.savefig('plots/val_loss.png', format='png')
+plt.clf()
+
+# Plotting together
+plt.plot(np.arange(0, l), train_loss, color='red', label='Training loss')
+plt.plot(np.arange(0, l), val_loss, color='blue', label='Validation loss')
+plt.xlabel('Iterations')
+plt.ylabel('RMSE')
+plt.title('Loss curve')
+plt.legend()
+plt.savefig('plots/loss.png', format='png')
+
 print(lf.calc_loss(test_utilmat))
 
 # Save the model
-lf.save('m1_100')
+lf.save('m1_50')
 
 '''
 Tuning number of latent factors:

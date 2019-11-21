@@ -20,8 +20,11 @@ class LF:
         self.learning_rate = learning_rate
         self.lmbda = lmbda
         self.verbose = verbose
+        # Initialising Latent factor matrices
         self.P = np.random.random((6040 + 1, self.n)) / 10
         self.Q = np.random.random((self.n, 3952 + 1)) / 10
+        # Stores model history
+        self.history = {'train_loss': [], 'val_loss': []}
     
     def train(self, utilmat, iters=10, val_utilmat=None):
         '''
@@ -36,8 +39,6 @@ class LF:
         bx = utilmat.bx
         # movie bias
         bi = utilmat.bi
-        train_loss = []
-        val_loss = []
         # Error function:
         # exi = rxi - mu - bx - bi - px.T * qi
         for i in range(iters):
@@ -62,15 +63,15 @@ class LF:
                 print('Iteration {}'.format(i+1))
                 tloss = self.calc_loss(utilmat)
                 print('Training Loss: ', tloss)
-                train_loss.append(tloss)
+                self.history['train_loss'].append(tloss)
                 if val_utilmat:
                     vloss = self.calc_loss(val_utilmat)
                     print('Validation Loss: ', vloss)
-                    val_loss.append(vloss)
+                    self.history['val_loss'].append(vloss)
         self.P = P
         self.Q = Q
         return train_loss, val_loss
-    
+
     def predict(self, user, movie):
         '''
         Finds predicted rating for the user-movie pair
