@@ -61,4 +61,7 @@ class UtilMat:
             bi[movie] = bi[movie] - self.mu
         self.bx = bx
         self.bi = bi
+        # Maximum ID nos for users and movies
+        self.MXUSER = 6040
+        self.MXMOVIE = 3952
 

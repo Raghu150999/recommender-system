@@ -146,4 +146,29 @@ class CollabFilter:
         Bounds the rating in the range [1, 5]
         '''
         return min(max(rating, 1), 5)
+
+    def calc_loss(self, utilmat):
+        '''
+        Computes RMSE loss for the data given in utilmat
+        '''
+        um = utilmat.um
+        rmse_u = 0
+        rmse_i = 0
+        rmse_b = 0
+        cnt = 0
+        for user in um:
+            for movie in um[user]:
+                actual = um[user][movie]
+                rmse_u += (actual - self.predict_u(user, movie)) ** 2
+                rmse_i += (actual - self.predict_i(user, movie)) ** 2
+                rmse_b += (actual - self.predict_b(user, movie)) ** 2
+                cnt += 1
+        rmse_b /= cnt
+        rmse_u /= cnt
+        rmse_i /= cnt
+        return rmse_b, rmse_u, rmse_i
+
+                
+
+
         

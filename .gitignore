@@ -4,3 +4,6 @@ ml-1m
 ratings_dev.csv
 ratings.csv
 __pycache__
+.pylintrc
+p.pickle
+q.pickle
