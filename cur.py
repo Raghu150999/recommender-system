@@ -1,6 +1,8 @@
 import numpy as np
 from svd import computeSVD
 import math
+from utilmat import UtilMat
+import pandas as pd
 
 class CUR:
 
@@ -87,7 +89,6 @@ class CUR:
         # Perform SVD on W
         # W = X S Y.T
         X, S, Y = computeSVD(w)
-
         # Calculate moore-penrose inverse and square it
         # i.e. S = (S+) ^ 2 
         # S+[i] = 1 / S[i] if S[i] > 0 else 0
@@ -171,4 +172,10 @@ class CUR:
         rmse = math.sqrt(rmse)
         mae /= cnt
         return rmse, mae
-     
+
+if __name__ == "__main__":
+    df = pd.read_csv('ratings.csv')
+    utilmat = UtilMat(df)
+    cur = CUR(utilmat, 2000)
+    rmse, mae = cur.calc_error2()
+    print('Reconstruction Error (RMSE, MAE): ', rmse, mae)

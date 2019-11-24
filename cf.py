@@ -1,4 +1,6 @@
 import math
+import pandas as pd
+from utilmat import UtilMat
 
 class CollabFilter:
     '''
@@ -38,7 +40,15 @@ class CollabFilter:
         ium = self.utilmat.ium
         um = self.utilmat.um
         bi = self.utilmat.bi
+        bx = self.utilmat.bx
         mu = self.utilmat.mu
+        if um.get(user) == None:
+            if ium.get(movie) == None:
+                return mu
+            else:
+                return bi[movie] + mu
+        elif ium.get(movie) == None:
+            return mu + bx[user]
         ix = ium[movie]
         b1 = -(bi[movie] + mu)
         scores = []
@@ -59,7 +69,15 @@ class CollabFilter:
         ium = self.utilmat.ium
         um = self.utilmat.um
         bx = self.utilmat.bx
+        bi = self.utilmat.bi
         mu = self.utilmat.mu
+        if um.get(user) == None:
+            if ium.get(movie) == None:
+                return mu
+            else:
+                return bi[movie] + mu
+        elif ium.get(movie) == None:
+            return mu + bx[user]
         ix = um[user]
         b1 = -(bx[user] + mu)
         scores = []
@@ -82,6 +100,13 @@ class CollabFilter:
         bx = self.utilmat.bx
         bi = self.utilmat.bi
         mu = self.utilmat.mu
+        if um.get(user) == None:
+            if ium.get(movie) == None:
+                return mu
+            else:
+                return bi[movie] + mu
+        elif ium.get(movie) == None:
+            return mu + bx[user]
         baseline = mu + bx[user] + bi[movie]
         ix = ium[movie]
         b1 = -(bi[movie] + mu)
@@ -155,20 +180,43 @@ class CollabFilter:
         rmse_u = 0
         rmse_i = 0
         rmse_b = 0
+        mae_u = 0
+        mae_i = 0
+        mae_b = 0
         cnt = 0
         for user in um:
             for movie in um[user]:
                 actual = um[user][movie]
-                rmse_u += (actual - self.predict_u(user, movie)) ** 2
-                rmse_i += (actual - self.predict_i(user, movie)) ** 2
-                rmse_b += (actual - self.predict_b(user, movie)) ** 2
+                predu = self.predict_u(user, movie)
+                predi = self.predict_i(user, movie)
+                predb = self.predict_b(user, movie)
+                rmse_u += (actual - predu) ** 2
+                rmse_i += (actual - predi) ** 2
+                rmse_b += (actual - predb) ** 2
+                mae_u += abs(actual - predu)
+                mae_i += abs(actual - predi)
+                mae_b += abs(actual - predb)
                 cnt += 1
         rmse_b /= cnt
         rmse_u /= cnt
         rmse_i /= cnt
-        return rmse_b, rmse_u, rmse_i
+        mae_b /= cnt
+        mae_u /= cnt
+        mae_i /= cnt
+        return rmse_b, rmse_u, rmse_i, mae_b, mae_u, mae_i
 
-                
+if __name__ == "__main__":
+    df = pd.read_csv('ratings_shuffled.csv')
+    df = df.iloc[:100000]
+    l = len(df)
+    test_data = df.iloc[:100, :].reset_index(drop=True)
+    train_data = df.iloc[100:, :].reset_index(drop=True)
+    train_utilmat = UtilMat(train_data)
+    test_utilmat = UtilMat(test_data)
 
-
-        
+    # Using collaborative filtering model
+    cf = CollabFilter(train_utilmat)
+    rmse_b, rmse_u, rmse_i, mae_b, mae_u, mae_i = cf.calc_loss(test_utilmat)
+    print('Using baseline approach: ', rmse_b, mae_b)
+    print('Using user-user filtering: ', rmse_u, mae_u)
+    print('Using item-item filtering: ', rmse_i, mae_i)

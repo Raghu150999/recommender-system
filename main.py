@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Splitting data into 8 : 1 : 1 (train : validation : test)
-df = pd.read_csv('ratings.csv')
+df = pd.read_csv('ratings_shuffled2.csv')
 # Shuffling data
-df = df.sample(frac=1).reset_index(drop=True)
+# df = df.sample(frac=1).reset_index(drop=True)
 
 # Data preparation
 l = len(df)
@@ -31,38 +31,23 @@ df = df.iloc[:10000]
 df.to_csv('ratings_dev.csv', index=False)
 '''
 
-# Using collaborative filtering model
-'''
-cf = CollabFilter(train_utilmat)
-rmse_b, rmse_u, rmse_i = cf.calc_loss(test_utilmat)
-print('RMSE using baseline approach: ', rmse_b)
-print('RMSE using user-user filtering: ', rmse_u)
-print('RMSE using item-item filtering: ', rmse_i)
-'''
-
-# Using CUR decompositon
-'''
-df = pd.read_csv('ratings_dev.csv')
-utilmat = UtilMat(df)
-cur = CUR(utilmat, 100)
-rmse, mae = cur.calc_error2()
-print(rmse, mae)
-'''
-
 '''
 Todos:
     Try different weight functions for weighted similarity
     Add select options functionality through command line arguments
 '''
 
+
 # Using latent factor model for prediction
-lf = LF(n=100, learning_rate=0.01, lmbda=0.2, verbose=True)
+lf = LF(n=100, learning_rate=0.01, lmbda=0.05, verbose=True)
 
 # Training the model
 try:
-    lf.train(train_utilmat, 100, val_utilmat=val_utilmat)
+    lf.train(train_utilmat, iters=50, val_utilmat=val_utilmat, method='stochastic')
 except BaseException as e:
+    print('Error: ', e)
     lf.save('tmp')
+    exit()
 
 train_loss = lf.history['train_loss']
 val_loss = lf.history['val_loss']
@@ -92,36 +77,10 @@ plt.ylabel('RMSE')
 plt.title('Loss curve')
 plt.legend()
 plt.savefig('plots/loss.png', format='png')
+plt.clf()
 
-print(lf.calc_loss(test_utilmat))
+print('Test Loss: ', lf.calc_loss(test_utilmat, get_mae=True))
 
 # Save the model
-lf.save('m1_50')
+lf.save('m1_100')
 
-'''
-Tuning number of latent factors:
-N        Test (RMSE)             Val (RMSE)             iters
-10       0.9218474399435459      0.896568172451457      60
-25       0.9143556181123862      0.8906144750476012     60
-30       0.9139402779404207      0.8891032522100686     60
-50       0.9101132420959622      0.8878834753298361     50
-100      0.9094701143684434      0.8869900381243345     40
-500      0.9391975314056097      0.9046234350554568     800
-'''
-
-'''
-Tuning learning rate:
-n = 100
-learning rate   Test (RMSE)         Val (RMSE)          iters
-0.005          0.9095923523179322  0.8851655069169209   100 
-0.01           0.9094701143684434  0.8869900381243345   40
-'''
-
-'''
-Tuning lambda:
-n = 100, learning_rate = 0.005
-lambda      Test (RMSE)         Val (RMSE)          iters
-0.01        0.9126156837325936  0.8902664516797075  100
-0.1         0.9095923523179322  0.8851655069169209  100
-1           0.9232470785332939  0.8956753581040031  30
-'''
