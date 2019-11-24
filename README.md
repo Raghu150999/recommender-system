@@ -25,6 +25,14 @@ run: `python main.py`
 
 Predicts user-movie rating using the latent factor model. Implemented using Stochastic Gradient Descent learns the latent (hidden) factors for each user and movie and along with baseline approximation computes the prediction.
 
+## Hyperparameters:
+
+`alpha (learning rate) = 0.01`
+
+`beta (regularisation coefficient) = 0.05`
+
+`epochs = 50`
+
 ## Results
 
 #### Tuning Latent Factors

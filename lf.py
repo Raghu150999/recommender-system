@@ -6,6 +6,7 @@ class LF:
     '''
     Latent factor model implementation
     '''
+
     def __init__(self, n=10, learning_rate=0.01, lmbda=0.001, verbose=False):
         '''
         Arguments:

@@ -5,10 +5,12 @@ from utilmat import UtilMat
 import pandas as pd
 
 class CUR:
-
+    '''
+    Performs CUR decomposition of the given input utility matrix
+    '''
+    
     def __init__(self, utilmat, r):
         '''
-        Performs CUR decomposition of the given input utility matrix
         Arguments:
             utilmat: Utility matrix object <class: UtilMat>
             r: size of square matrix U in CUR decomposition

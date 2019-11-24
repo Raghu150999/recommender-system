@@ -6,7 +6,7 @@ class CollabFilter:
     '''
     Uses collaborative filtering approach to predict user ratings for recommendation systems.
     '''
-
+    
     def __init__(self, utilmat, ftype='item', k=5):
         '''
         Arguments:
