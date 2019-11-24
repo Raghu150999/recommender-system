@@ -6,12 +6,10 @@ from lf import LF
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Splitting data into 8 : 1 : 1 (train : validation : test)
-df = pd.read_csv('ratings_shuffled2.csv')
-# Shuffling data
-# df = df.sample(frac=1).reset_index(drop=True)
+df = pd.read_csv('ratings_shuffled.csv')
 
 # Data preparation
+# Splitting into 8 : 1 : 1 (train validation test split)
 l = len(df)
 training_split = int(l * 0.8)
 l -= training_split
