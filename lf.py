@@ -7,7 +7,7 @@ class LF:
     Latent factor model implementation
     '''
 
-    def __init__(self, n=10, learning_rate=0.01, lmbda=0.001, verbose=False):
+    def __init__(self, n=10, learning_rate=0.01, lmbda=0.05, verbose=False):
         '''
         Arguments:
             utilmat: Utility matrix of type <class: UtilMat>
@@ -21,7 +21,7 @@ class LF:
         self.learning_rate = learning_rate
         self.lmbda = lmbda
         self.verbose = verbose
-        # Initialising Latent factor matrices in [-0.5, 0.5]
+        # Initialising Latent factor matrices
         self.P = (np.random.random((6040 + 1, self.n)) * 2 - 1) / self.n * 10
         self.Q = (np.random.random((self.n, 3952 + 1)) * 2 - 1) / self.n * 10
         # Stores model history
@@ -39,6 +39,7 @@ class LF:
             utilmat: Utility matrix of type <class: UtilMat> contains training data
             val_utilmat: validation data
         '''
+        self.utilmat = utilmat
         if method == 'bias':
             return self.train_bias(utilmat, iters, val_utilmat)
         P = self.P

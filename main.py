@@ -6,6 +6,7 @@ from lf import LF
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 df = pd.read_csv('ratings_shuffled.csv')
 
 # Data preparation
@@ -37,11 +38,11 @@ Todos:
 
 
 # Using latent factor model for prediction
-lf = LF(n=100, learning_rate=0.01, lmbda=0.05, verbose=True)
+lf = LF(n=100, learning_rate=0.01, lmbda=0.1, verbose=True)
 
 # Training the model
 try:
-    lf.train(train_utilmat, iters=50, val_utilmat=val_utilmat, method='stochastic')
+    lf.train(train_utilmat, iters=10, val_utilmat=val_utilmat, method='stochastic')
 except BaseException as e:
     print('Error: ', e)
     lf.save('tmp')
@@ -80,5 +81,5 @@ plt.clf()
 print('Test Loss: ', lf.calc_loss(test_utilmat, get_mae=True))
 
 # Save the model
-lf.save('m1_100')
+lf.save('md50')
 
