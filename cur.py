@@ -126,7 +126,7 @@ class CUR:
             for movie in r:
                 R[i, movie] = r[movie]
         Res = np.dot(C, self.U).dot(R)
-        rmse = np.sum((Res - I) ** 2) / (N * M)
+        rmse = math.sqrt(np.sum((Res - I) ** 2) / (N * M))
         mae = np.sum(np.abs(Res - I)) / (N * M)
         return rmse, mae
 
